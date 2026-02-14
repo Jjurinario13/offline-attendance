@@ -1,156 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Offline Attendance System</title>
+<title>Offline Attendance System</title>
 
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
 
-    body {
-        font-family: 'Fredoka', cursive;
-        background: linear-gradient(135deg, #c9d6ff, #e2e2e2);
-        text-align: center;
-        margin: 0;
-        padding: 0;
-    }
+body {
+    font-family: 'Fredoka', cursive;
+    background: linear-gradient(135deg, #c9d6ff, #e2e2e2);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
 
-    .container {
-        width: 900px;
-        margin: 50px auto;
-        background: white;
-        padding: 30px;
-        border-radius: 25px;
-        box-shadow: 
-            0 20px 40px rgba(0,0,0,0.2),
-            inset 0 4px 10px rgba(255,255,255,0.6);
-    }
+.container {
+    width: 900px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
 
-    input, select {
-        padding: 14px;
-        margin: 10px;
-        width: 280px;
-        border-radius: 20px;
-        border: none;
-        font-size: 16px;
-        background: #f1f3f6;
-        box-shadow: 
-            inset 5px 5px 10px #d1d9e6,
-            inset -5px -5px 10px #ffffff;
-        font-family: 'Fredoka', cursive;
-    }
+input, select {
+    padding: 14px;
+    margin: 10px;
+    width: 280px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    background: #f1f3f6;
+}
 
-    button {
-        padding: 15px 40px;
-        margin: 10px;
-        border: none;
-        border-radius: 50px;
-        background: linear-gradient(145deg, #4facfe, #00f2fe);
-        color: white;
-        font-size: 18px;
-        font-weight: 700;
-        cursor: pointer;
-        font-family: 'Fredoka', cursive;
+button {
+    padding: 15px 40px;
+    margin: 10px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(145deg, #4facfe, #00f2fe);
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
 
-        box-shadow:
-            0 12px 0 #2b7ccc,
-            0 18px 30px rgba(0,0,0,0.35),
-            inset 0 3px 5px rgba(255,255,255,0.6);
-        
-        transition: 0.15s ease;
-    }
+.logout-btn {
+    background: linear-gradient(145deg, #ff512f, #dd2476);
+}
 
-    button:active {
-        transform: translateY(8px);
-        box-shadow:
-            0 4px 0 #2b7ccc,
-            0 10px 15px rgba(0,0,0,0.35),
-            inset 0 2px 3px rgba(255,255,255,0.6);
-    }
+.hidden { display:none; }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 25px;
-        font-size: 15px;
-    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+}
 
-    th, td {
-        padding: 12px;
-    }
+th, td { padding: 12px; }
+th { background:#667eea; color:white; }
+tr:nth-child(even){ background:#f6f8ff; }
 
-    th {
-        background: linear-gradient(145deg, #667eea, #764ba2);
-        color: white;
-        border-radius: 10px;
-    }
+/* CLOCK */
+.clock-box {
+    background:#111;
+    color:#00ffcc;
+    padding:8px 20px;
+    border-radius:12px;
+    margin:10px auto;
+    font-family: monospace;
+    width: fit-content;
+}
 
-    tr:nth-child(even) {
-        background: #f6f8ff;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    h2 {
-        font-size: 32px;
-        color: #34495e;
-        text-shadow: 
-            2px 2px 0 #fff,
-            4px 4px 0 rgba(0,0,0,0.15);
-    }
-
-    .top-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-    </style>
+.clock-time{ font-size:22px; }
+#dubaiDate{ font-size:14px; }
+#temp{ font-size:14px; color:#ffcc00; }
+</style>
 </head>
 
 <body>
 
 <div class="container" id="loginBox">
-    <h2>Employee Log in</h2>
+    <h2>Employee Login</h2>
     <input id="empId" placeholder="Employee ID"><br>
     <input id="password" type="password" placeholder="Password"><br>
     <button onclick="login()">Login</button>
 </div>
 
 <div class="container hidden" id="dashboard">
-
-    <div class="top-buttons">
-        <button onclick="refreshName()">Refresh Name</button>
-        <button onclick="goBack()">Back</button>
-    </div>
-
     <h2>Attendance Dashboard</h2>
-    <h3 id="dubaiTime"></h3>
-    <h4 id="todayStatus"></h4>
 
-    <!-- Instructions Box -->
-    <div style="background:#f0f4ff;padding:15px;border-radius:15px;margin:15px 0;
-                box-shadow: inset 2px 2px 6px rgba(0,0,0,0.1); text-align:left;">
-        <strong>Instructions:</strong><br>
-        • Click <b>Refresh Name</b> → only clears name field.<br>
-        • Already recorded entries → <b>NOT deleted</b>.<br>
-        • Want to logout? → Click <b>Back</b>.
+    <button class="logout-btn" onclick="logout()">⬅ Back / Logout</button>
+
+    <div class="clock-box">
+        <div id="dubaiDate"></div>
+        <div class="clock-time" id="dubaiTime"></div>
+        <div id="temp"></div>
     </div>
 
     <input id="empName" placeholder="Employee Name"><br>
 
     <select id="position">
-        <option>IT Support</option>
-        <option>Web Developer</option>
+        <option value="">-- Position --</option>
         <option>HR Staff</option>
+        <option>Web Developer</option>
         <option>Manager</option>
-        <option>Technician</option>
     </select>
 
     <select id="department">
-        <option>IT</option>
+        <option value="">-- Department --</option>
         <option>HR</option>
-        <option>Finance</option>
+        <option>IT</option>
         <option>Operations</option>
     </select>
 
@@ -161,103 +121,112 @@
     <h3>Attendance Records</h3>
     <table>
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Department</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Device</th>
-            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
         </thead>
         <tbody id="records"></tbody>
     </table>
 </div>
 
 <script>
-const users = {
-    "abcd123": "1234"
+document.addEventListener("DOMContentLoaded", ()=>{
+
+const empId = document.getElementById("empId");
+const password = document.getElementById("password");
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+const empName = document.getElementById("empName");
+const position = document.getElementById("position");
+const department = document.getElementById("department");
+const records = document.getElementById("records");
+const dubaiDate = document.getElementById("dubaiDate");
+const dubaiTime = document.getElementById("dubaiTime");
+const temp = document.getElementById("temp");
+
+const users = { "abcd123":"1234" };
+
+const employees = {
+    "lenylen buguas": { position:"HR Staff", department:"HR" },
+    "justin jurinario": { position:"Web Developer", department:"IT" },
+    "kobe bryant": { position:"Manager", department:"Operations" }
 };
 
-function login() {
-    if (users[empId.value] === password.value) {
+window.login = function(){
+    if(users[empId.value.trim()] === password.value.trim()){
         loginBox.classList.add("hidden");
         dashboard.classList.remove("hidden");
         updateDubaiTime();
-        loadRecords();
+        generateTemp();
+        empName.focus();
     } else {
-        alert("Invalid login");
+        alert("LOGIN FAILED\nID: abcd123\nPassword: 1234");
     }
 }
 
-function goBack() {
+window.logout = function(){
     dashboard.classList.add("hidden");
     loginBox.classList.remove("hidden");
+    empId.value="";
+    password.value="";
+    empName.value="";
+    position.value="";
+    department.value="";
+    empId.focus();
 }
 
-function refreshName() {
-    empName.value = "";
+empName.addEventListener("input", ()=>{
+    const key = empName.value.toLowerCase().trim();
+    if(employees[key]){
+        position.value = employees[key].position;
+        department.value = employees[key].department;
+    }
+});
+
+/* CLOCK */
+function updateDubaiTime(){
+    let now = new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Dubai"}));
+    dubaiDate.innerText = "Dubai: " + now.toLocaleDateString();
+    dubaiTime.innerText = now.toLocaleTimeString();
+}
+setInterval(updateDubaiTime,1000);
+
+/* FAKE TEMPERATURE (offline) */
+function generateTemp(){
+    let t = Math.floor(Math.random() * (40 - 28 + 1)) + 28;
+    temp.innerText = "🌡 " + t + "°C";
+}
+setInterval(generateTemp,60000); // every 1 minute
+
+window.timeIn = ()=>save("IN");
+window.timeOut = ()=>save("OUT");
+
+function save(status){
+    if(!empName.value) return alert("Enter name first");
+    let now = new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Dubai"}));
+    records.innerHTML += `
+    <tr>
+        <td>${empId.value}</td>
+        <td>${empName.value}</td>
+        <td>${position.value}</td>
+        <td>${department.value}</td>
+        <td>${status}</td>
+        <td>${now.toLocaleDateString()}</td>
+        <td>${now.toLocaleTimeString()}</td>
+    </tr>`;
 }
 
-function updateDubaiTime() {
-    let dubai = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dubai" }));
-    dubaiTime.innerText = "Dubai Time: " + dubai.toLocaleString();
-    todayStatus.innerText = (dubai.getDay() === 0) ? "Sunday - Day Off" : "Working Day";
-}
-setInterval(updateDubaiTime, 1000);
+empId.addEventListener("keydown", e=> e.key==="Enter" && password.focus());
+password.addEventListener("keydown", e=> e.key==="Enter" && login());
+empName.addEventListener("keydown", e=> e.key==="Enter" && timeIn());
 
-function getDeviceInfo() {
-    return navigator.userAgent.split(")")[0] + ")";
-}
-
-function timeIn() {
-    saveRecord("IN");
-}
-
-function timeOut() {
-    saveRecord("OUT");
-}
-
-function saveRecord(status) {
-    let now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dubai" }));
-
-    let record = {
-        id: empId.value,
-        name: empName.value,
-        position: position.value,
-        department: department.value,
-        status: status,
-        date: now.toLocaleDateString(),
-        time: now.toLocaleTimeString(),
-        device: getDeviceInfo()
-    };
-
-    let data = JSON.parse(localStorage.getItem("attendance") || "[]");
-    data.push(record);
-    localStorage.setItem("attendance", JSON.stringify(data));
-    loadRecords();
-}
-
-function loadRecords() {
-    let data = JSON.parse(localStorage.getItem("attendance") || "[]");
-    records.innerHTML = "";
-
-    data.forEach(r => {
-        records.innerHTML += `
-        <tr>
-            <td>${r.id}</td>
-            <td>${r.name}</td>
-            <td>${r.position}</td>
-            <td>${r.department}</td>
-            <td>${r.status}</td>
-            <td>${r.date}</td>
-            <td>${r.time}</td>
-            <td>${r.device}</td>
-        </tr>`;
-    });
-}
+});
 </script>
 
 </body>
